@@ -9,10 +9,12 @@ class AlexNet(nn.Module):
             nn.Conv2d(3, config.conv1["out_channels"], kernel_size=11, stride=1, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
+            nn.LocalResponseNorm(config.conv1["out_channels"], alpha=0.0001, beta=0.75, k=2),
             
             nn.Conv2d(config.conv1["out_channels"], config.conv2["out_channels"], kernel_size=5, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
+            nn.LocalResponseNorm(config.conv1["out_channels"], alpha=0.0001, beta=0.75, k=2),
             
             nn.Conv2d(config.conv2["out_channels"], config.conv3["out_channels"], kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
@@ -38,6 +40,7 @@ class AlexNet(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
+        #print(x.shape)
         x = torch.flatten(x, 1)
         x = self.classifier(x)
         return x
