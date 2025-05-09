@@ -13,4 +13,9 @@ This repository is dedicated to the implementation of deep learning research pap
 **AlexNet**
   [`code`](Visual/Models/AlexNet.py)
   [Paper: ImageNet Classification with Deep Convolutional Neural Networks](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)  
-  
+
+### Natural Language
+
+**Transformer**
+  [`code`](Language/models/transformer.py)
+  [Paper: Attention Is All You Need](https://arxiv.org/pdf/1706.03762)
