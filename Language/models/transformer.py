@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import math
+
 # TransformerConfig
 #   num_encoder_layers
 #   embed_din
@@ -13,31 +15,41 @@ import torch.nn.functional as F
 class Transformer(nn.Module):
     def __init__(self, TransformerConfig):
         super(Transformer, self).__init__()
-        self.embeddings = SineCosineEncoding(
+        self.embeddings = SinusoidalEmbeddingLayer(
             TransformerConfig.embed_dim, 
             TransformerConfig.EncodingConfig.max_len,
             TransformerConfig.device,
             TransformerConfig.dropout_prob
         )
 
-class SineCosineEncoding(nn.Module):
-    def __init__(self, embed_dim, max_len=5000, device='cpu', dropout_prob=0.1):
-        super(SineCosineEncoding, self).__init__()
-        self.embed_dim = embed_dim
+# Adding positional Information using sinusoidal function
+class SinusoidalEmbeddingLayer(nn.Module):
+    def __init__(self, vocab_size, embed_size, max_length, device):
+        super(SinusoidalEmbeddingLayer, self).__init__()
 
-        position_encoding = torch.zeros(max_len, embed_dim, device=device)
-        position = torch.arange(0, max_len, dtype=torch.float, device=device).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, embed_dim, 2, device=device).float() * (-torch.log(torch.tensor(10000.0)) / embed_dim))
+        self.embedding = nn.Embedding(vocab_size, embed_size)
         
-        position_encoding[:, 0::2] = torch.sin(position * div_term)
-        position_encoding[:, 1::2] = torch.cos(position * div_term)
-
-        self.register_buffer('position_encoding', position_encoding.unsqueeze(0))  # [1, max_len, embed_dim]
-        self.dropout = nn.Dropout(p=dropout_prob)
+        # register_buffer => Tensor which is not a parameter, but should be part of the modules state.
+        self.register_buffer("positional_embedding", self._get_positional_encoding(max_length, embed_size, device))
+        self.layer_norm = nn.LayerNorm(embed_size, eps=1e-12)
+    
+    def _get_positional_encoding(self, max_length, embed_size, device):
+        pe = torch.zeros(max_length, embed_size, device=device)                              # Create a tensor of zeros of size (max_length, embed_size)
+        position = torch.arange(0, max_length, dtype=torch.float).unsqueeze(1)              # Create a tensor of size (max_length, 1)
+        div_term = torch.exp(torch.arange(0, embed_size, 2).float() * (-math.log(10000.0) / embed_size))    # Create a tensor of exp values of 0 to embed_size/2
+        
+        pe[:, 0::2] = torch.sin(position * div_term)                                          # Apply sin function to even indices, start=0 , step=2
+        pe[:, 1::2] = torch.cos(position * div_term)                                          # Apply cos function to odd indices, start=1, step=2
+        pe = pe.unsqueeze(0)                                                                  # shape: (1, max_length, embed_size)
+        return pe
 
     def forward(self, x):
-        x = x + self.position_encoding[:, :x.size(1), :]
-        return self.dropout(x)
+        word_embedding = self.embedding(x)                                                  # Convert unique word tokens to word embeddings
+        
+        positional_embeddings = self.positional_embedding[:, :x.size(-2), :].to(x.device)   # Get sinosudal indicies information as positional embeddings          Shape: (1, Seqlen, embed_size)
+        x = word_embedding + positional_embeddings                                          # Adds word embedding to positional embedding
+        x = self.layer_norm(x)                                                              # Apply layer normalization
+        return x
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, embed_dim, num_heads , mask=False):
