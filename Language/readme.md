@@ -1,0 +1,1 @@
+![Model Architecture](transformers_architecture.png)
