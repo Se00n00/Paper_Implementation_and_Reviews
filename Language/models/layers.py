@@ -2,26 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import math
-
-# TransformerConfig
-#   num_encoder_layers
-#   embed_din
-#   device
-#   dropout_prob
-#   EncodingConfig: max_len
-#   embed_dim, num_heads , mask=False
-
-class Transformer(nn.Module):
-    def __init__(self, TransformerConfig):
-        super(Transformer, self).__init__()
-        self.embeddings = SinusoidalEmbeddingLayer(
-            TransformerConfig.embed_dim, 
-            TransformerConfig.EncodingConfig.max_len,
-            TransformerConfig.device,
-            TransformerConfig.dropout_prob
-        )
-
 # Adding positional Information using sinusoidal function
 class SinusoidalEmbeddingLayer(nn.Module):
     def __init__(self, vocab_size, embed_size, max_length, device):
