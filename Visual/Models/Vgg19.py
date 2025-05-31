@@ -29,7 +29,7 @@ class VGG19(nn.Module):
             # Convolution(2, in_channels=256, out_channels=512, kernel_size=3, stride=1, padding=1),  # No. of convolutions Changed for Tiny-imagenet
             # nn.MaxPool2d(kernel_size=2, stride=2),
             # Convolution(2, in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),  # No. of convolutions Changed for Tiny-imagenet
-            # nn.MaxPool2d(kernel_size=2, stride=2) : Changed for Tiny-imagenet
+            # nn.MaxPool2d(kernel_size=2, stride=2) # Changed for Tiny-imagenet
         )
     
         self.fc_layers = nn.Sequential(
