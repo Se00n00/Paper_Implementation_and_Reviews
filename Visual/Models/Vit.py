@@ -2,9 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from transformers import PreTrainedModel
-
-
+# Example Config
 class ViTconfig:
     model_type = "ViT"
     patch_size = 16
@@ -17,10 +15,9 @@ class ViTconfig:
     num_classes = 100
 
 # ViT (Vision Transformer) Model to be used with HuggingFace Transformers
-class ViTTransformerForClassification(PreTrainedModel):
-    config_class = ViTconfig
+class ViTTransformerForClassification(nn.Module):
     def __init__(self, config):
-        super(ViTTransformerForClassification, self).__init__(config)
+        super(ViTTransformerForClassification, self).__init__()
         self.vit = ViT(config)
         self.linear = nn.Linear(config.embed_dim, config.num_classes)
 
