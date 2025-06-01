@@ -17,6 +17,10 @@ This repository is dedicated to the implementation of deep learning research pap
 **VGG19**
   [`code`](Visual/Models/Vgg19.py)
   [Paper: Very Deep Convolutional Networks For Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556)
+  
+**ViT**
+  [`code`](Visual/Models/Vit.py)
+  [Paper: An Image is worth 16x16 words: Transformer for Image Recognition at scale](https://arxiv.org/pdf/2010.11929)
 
 ### Natural Language
 
