@@ -27,3 +27,7 @@ This repository is dedicated to the implementation of deep learning research pap
 **Transformer**
   [`code`](Language/models/transformer.py)
   [Paper: Attention Is All You Need](https://arxiv.org/pdf/1706.03762)
+
+### MISC
+**Query Enhancement Techniques**
+  [Notebook](https://github.com/Se00n00/Paper_Implementation_and_Reviews/blob/main/MISC/RAG/Query_Enhancement.ipynb)
